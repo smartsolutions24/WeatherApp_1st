@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
 </head>
 
+
 <body>
 
     <div class="card" id="card">
@@ -65,7 +66,8 @@
     </div>
 
     <script>
-        const apiKey = "mykeyhere";
+        window.API_KEY = "{{ api_key }}";
+        const apiKey = window.API_KEY;
         const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=imperial&q=";
         const dailyApiUrl = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&q=";
 
