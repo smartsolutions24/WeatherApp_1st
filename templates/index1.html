@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Tejas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+</head>
+
+<body>
+
+    <div class="card" id="card">
+        <div class="search">
+            <input type="text" placeholder="Enter city name" spellcheck="false">
+            <button><img src="{{ url_for('static', filename='images/search.png') }} " alt="Search"  ></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name.Please enter a different city name.</p>
+        </div>
+        <div class="weather">
+            <img src="{{ url_for('static', filename='images/rain.png') }}" class="weather-icon">
+            <h1 class="temp">22°F</h1>
+            <h2 class="city">New York</h2>
+            <br>
+            <h2 class="description test">Partly Cloudy</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="{{ url_for('static', filename='images/humidity.png') }}">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="{{ url_for('static', filename='images/feel.png') }}">
+                    <div>
+                        <p class="feelslike">59°F</p>
+                        <p>Feels like</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="{{ url_for('static', filename='images/temp.png') }}">
+                    <div>
+                        <p class="temp1">59°F</p>
+                        <p>Max Temp</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="{{ url_for('static', filename='images/cold.png') }}">
+                    <div>
+                        <p class="temp2">42°F</p>
+                        <p>Min Temp</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="{{ url_for('static', filename='images/wind.png') }}">
+                    <div>
+                        <p class="wind">15 mph</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const apiKey = "mykeyhere";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=imperial&q=";
+        const dailyApiUrl = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&q=";
+
+        const searchBox = document.querySelector(".search input");
+        const searchBtn = document.querySelector(".search button");
+        const weatherIcon = document.querySelector(".weather-icon");
+
+          async function checkWeather7day(city) {
+            const response = await fetch(dailyApiUrl + city + `&appid=${apiKey}` + "&cnt=7");
+
+            if (response.status == 404) {
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display = "none";
+            } else {
+                var data = await response.json();
+
+                console.log(data);
+            }
+          }
+
+        async function checkWeather(city) {
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+            if (response.status == 404) {
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display = "none";
+            } else {
+                var data = await response.json();
+
+        
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".description").innerHTML = data.weather[0].description;
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°F";
+                document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+                document.querySelector(".wind").innerHTML = data.wind.speed + " mph";
+                document.querySelector(".feelslike").innerHTML = Math.round(data.main.feels_like) + "°F";
+                document.querySelector(".temp1").innerHTML = Math.round(data.main.temp_max) + "°F";
+                document.querySelector(".temp2").innerHTML = Math.round(data.main.temp_min) + "°F";
+
+                console.log(dailyApiUrl);
+
+
+                console.log(data);
+
+                if (data.weather[0].main == "Clouds") {
+                    weatherIcon.src = "{{ url_for('static', filename='images/clouds.png') }}";
+                }
+                else if (data.weather[0].main == "Clear") {
+                    weatherIcon.src = "{{ url_for('static', filename='images/clear.png') }}";
+                }
+                else if (data.weather[0].main == "Rain") {
+                    weatherIcon.src = "{{ url_for('static', filename='images/rain.png') }}";
+                }
+                else if (data.weather[0].main == "Mist") {
+                    weatherIcon.src = "{{ url_for('static', filename='images/mist.png') }}";
+                }
+                else if (data.weather[0].main == "Snow") {
+                    weatherIcon.src = "{{ url_for('static', filename='images/snow.png') }}";
+                }
+
+                document.querySelector(".weather").style.display = "block";
+                document.querySelector(".error").style.display = "none";
+            }
+
+
+        }
+
+        searchBtn.addEventListener("click", () => {
+            checkWeather(searchBox.value);
+            checkWeather7day(searchBox.value);
+        })
+
+
+    </script>
+
+
+</body>
+
+</html>
